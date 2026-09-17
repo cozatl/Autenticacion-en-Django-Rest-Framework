@@ -78,16 +78,16 @@ services:
 
   web:
     <<: *default-app
-    networks:
-      - default
-      - traefik-public
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-public"
-      - "traefik.http.routers.hellodjango.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.hellodjango.entrypoints=websecure"
-      - "traefik.http.routers.hellodjango.tls.certresolver=leresolver"
-      - "traefik.http.services.hellodjango.loadbalancer.server.port=8000"
+    # networks:
+    #   - default
+    #   - traefik-public
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=traefik-public"
+    #   - "traefik.http.routers.hellodjango.rule=Host(`${DOMAIN}`)"
+    #   - "traefik.http.routers.hellodjango.entrypoints=websecure"
+    #   - "traefik.http.routers.hellodjango.tls.certresolver=leresolver"
+    #   - "traefik.http.services.hellodjango.loadbalancer.server.port=8000"
     deploy:
       resources:
         limits:
@@ -100,8 +100,8 @@ services:
       start_period: "5s"
       retries: 3
 # Removed lines since localhost won't be working on Linux
-#    ports:
-#      - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:${PORT:-8000}"
+    ports:
+     - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:${PORT:-8000}"
     profiles: ["web"]
 
   worker:
@@ -132,8 +132,8 @@ services:
 volumes:
   postgres: {}
   redis: {}
-# Added lines for traefik network instead of localhost
-networks:
-  default:
-  traefik-public:
-    external: true
+# # Added lines for traefik network instead of localhost
+# networks:
+#   default:
+#   traefik-public:
+#     external: true

@@ -1,5 +1,5 @@
 FROM node:24.21.0-trixie-slim AS assets
-LABEL maintainer="Nick Janetakis <nick.janetakis@gmail.com>"
+LABEL maintainer="Jesus Cozatl <administracion@cvsistemas.com.mx>"
 
 WORKDIR /app/assets
 
@@ -34,7 +34,7 @@ CMD ["bash"]
 ###############################################################################
 
 FROM python:3.14.7-slim-trixie AS app-build
-LABEL maintainer="Nick Janetakis <nick.janetakis@gmail.com>"
+LABEL maintainer="Jesus Cozatl <administracion@cvsistemas.com.mx>"
 
 WORKDIR /app
 
@@ -70,7 +70,7 @@ CMD ["bash"]
 ###############################################################################
 
 FROM python:3.14.7-slim-trixie AS app
-LABEL maintainer="Nick Janetakis <nick.janetakis@gmail.com>"
+LABEL maintainer="Jesus Cozatl <administracion@cvsistemas.com.mx>"
 
 WORKDIR /app
 
