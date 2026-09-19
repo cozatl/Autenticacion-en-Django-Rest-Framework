@@ -38,6 +38,7 @@ LOGIN_URL = "/admin/login/"
 # Application definitions
 INSTALLED_APPS = [
     "pages.apps.PagesConfig",
+    "sales.apps.SalesConfig",  # Added new app
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
