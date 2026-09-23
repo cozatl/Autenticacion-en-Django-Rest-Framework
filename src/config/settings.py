@@ -39,6 +39,11 @@ LOGIN_URL = "/admin/login/"
 INSTALLED_APPS = [
     "pages.apps.PagesConfig",
     "sales.apps.SalesConfig",  # Added new app
+    "product.apps.ProductConfig",  # Added new app
+    "order_manager.apps.OrderManagerConfig",  # Added new app
+    "billing_profile.apps.BillingProfileConfig",  # Added new app
+    "address.apps.AddressConfig",  # Added new app
+    "cart.apps.CartConfig",  # Added new app
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
