@@ -1,89 +1,65 @@
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from datetime import timedelta
 
-from .models import Order, OrderItem, Product
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils import timezone
+from django.views.generic import View
+
+# from .models import Order, OrderItem, Product
+from order_manager.models import Order
+
+
+# class SalesAjaxView(View):
+#     def get(self, request, *args, **kwargs):
+#         data = {}
+#         if request.user.is_staff:
+#             qs = Order.objects.all().by_weeks_range(
+#                 weeks_ago=5, number_of_weeks=5
+#             )
+#             if request.GET.get("type") == "week":
+#                 days = 7
+#                 start_date = timezone.now().today() - timedelta(
+#                     days=days - 1
+#                 )
+#                 datetime_list = []
+#                 labels = []
+#                 sales_items = []
+#                 for x in range(days):
+#                     new_time = start_date + timedelta(days=x)
+#                     datetime_list.append(new_time)
+#                     labels.append(new_time.strftime("%a"))
+#                     new_qs = qs.filter(
+#                         created_at__day=new_time.day,
+#                         created_at__month=new_time.month,
+#                     )
+#                     day_total = new_qs.totals_data()["total__sum"] or 0
+#                     sales_items.append(day_total)
+#                 data["labels"] = labels
+#                 data["data"] = sales_items
+#         return JsonResponse(data)
+class SalesAjaxView(View):
+    def get(self, request, *args, **kwargs):
+        data = {}
+        if request.user.is_staff:
+            qs = Order.objects.by_weeks_range(weeks_ago=5, number_of_weeks=5)
+            if request.GET.get("type") == "week":
+                days = 7
+                start_date = timezone.localdate() - timedelta(days=days - 1)
+                labels, sales_items = [], []
+                for x in range(days):
+                    day = start_date + timedelta(days=x)
+                    labels.append(day.strftime("%a"))
+                    day_total = (
+                        qs.filter(created_at__date=day).totals_data()[
+                            "total__sum"
+                        ]
+                        or 0
+                    )
+                    sales_items.append(float(day_total))
+                data["labels"] = labels
+                data["data"] = sales_items
+        return JsonResponse(data)
 
 
 def sales_view(request):
-    """Show products saved in PostgreSQL and current cart."""
-    # Only shows available products
-    products = Product.objects.filter(stock__gt=0)
-    cart = request.session.get("cart", {})
-
-    cart_total = 0.0
-    for item in cart.values():
-        cart_total += float(item["price"]) * int(item["quantity"])
-
-    context = {
-        "products": products,
-        "cart": cart,
-        "cart_total": round(cart_total, 2),
-    }
-    return render(request, "sales/sales.html", context)
-
-
-def add_to_cart(request, product_id):
-    """Add one product from db to the cart in current session."""
-    if request.method == "POST":
-        product = get_object_or_404(Product, id=product_id)
-        cart = request.session.get("cart", {})
-        str_id = str(product_id)
-
-        if str_id in cart:
-            cart[str_id]["quantity"] += 1
-        else:
-            cart[str_id] = {
-                "id": product.id,
-                "name": product.name,
-                "price": str(product.price),
-                "quantity": 1,
-            }
-
-        request.session["cart"] = cart
-        request.session.modified = True
-
-    return redirect("sales:sales_list")
-
-
-def process_order(request):
-    """Save order and its items in PostgreSQL and
-    clear cart session."""
-    if request.method == "POST":
-        cart = request.session.get("cart", {})
-
-        if not cart:
-            return redirect("sales:sales_list")
-
-        order_total = sum(
-            float(item["price"]) * item["quantity"] for item in cart.values()
-        )
-
-        # Register order in database
-        new_order = Order.objects.create(total=order_total)
-
-        # Register each Order Item and update stock
-        for item in cart.values():
-            product = Product.objects.get(id=item["id"])
-            OrderItem.objects.create(
-                order=new_order,
-                product=product,
-                quantity=item["quantity"],
-                unit_price=item["price"],
-            )
-            # Descontar stock
-            if product.stock >= item["quantity"]:
-                product.stock -= item["quantity"]
-                product.save()
-
-        # Clean last session
-        request.session["cart"] = {}
-        request.session.modified = True
-
-        return HttpResponse(
-            f"<h1>Order #{new_order.id} saved successfully!</h1>"
-            f"<a href='/sales/'>Go back to the store</a> | "
-            f"<a href='/admin/sales/order/{new_order.id}/change/'>"
-            "Ver en Admin</a>"
-        )
-
-    return redirect("sales:sales_list")
+    return render(request, "sales/sales.html")

@@ -32,6 +32,9 @@ TESTING = "test" in sys.argv
 allowed_hosts = os.getenv("ALLOWED_HOSTS", ".localhost,127.0.0.1,[::1]")
 ALLOWED_HOSTS = list(map(str.strip, allowed_hosts.split(",")))
 
+# Add accounts model to match superuser with all new users
+AUTH_USER_MODEL = "accounts.User"
+
 # Define login page URL for the login_required decorator
 LOGIN_URL = "/admin/login/"
 
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     "billing_profile.apps.BillingProfileConfig",  # Added new app
     "address.apps.AddressConfig",  # Added new app
     "cart.apps.CartConfig",  # Added new app
+    "accounts.apps.AccountsConfig",  # Added new app
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

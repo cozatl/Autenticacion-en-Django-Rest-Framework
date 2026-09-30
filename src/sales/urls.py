@@ -6,11 +6,8 @@ from sales import views
 app_name = "sales"
 
 urlpatterns = [
+    # Load page /sales/
     path("", views.sales_view, name="sales_list"),
-    path(
-        "agregar/<int:product_id>/",
-        views.add_to_cart,
-        name="add_to_cart",
-    ),
-    path("procesar/", views.process_order, name="process_order"),
+    # Load graphics
+    path("data/", views.SalesAjaxView.as_view(), name="sales-data"),
 ]
