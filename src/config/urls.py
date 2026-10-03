@@ -23,6 +23,7 @@ urlpatterns = [
     path("up/", include("up.urls")),
     path("", include("pages.urls")),
     path("sales/", include("sales.urls")),
+    path("", include("accounts.urls")),
     path("admin/", admin.site.urls),
 ]
 if not settings.TESTING:
