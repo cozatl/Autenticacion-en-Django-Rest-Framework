@@ -7,7 +7,7 @@ app_name = "sales"
 
 urlpatterns = [
     # Load page /sales/
-    path("", views.sales_view, name="sales_list"),
+    path("", views.sales_view, name="sales"),
     # Load graphics
     path("data/", views.SalesAjaxView.as_view(), name="sales-data"),
 ]

@@ -40,7 +40,7 @@ class OrderManagerQuerySet(models.query.QuerySet):
 
     def by_range(self, start_date, end_date=None):
         if end_date is None:
-            return self.filter(created_at_gte=start_date)
+            return self.filter(created_at__gte=start_date)
         return self.filter(created_at__gte=start_date).filter(
             created_at__lte=end_date
         )

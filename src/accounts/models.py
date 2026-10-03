@@ -36,7 +36,7 @@ class UserManager(BaseUserManager):
         user_obj.set_password(password)
         user_obj.staff = is_staff
         user_obj.admin = is_admin
-        user_obj.is_active = is_admin
+        user_obj.is_active = is_active
         user_obj.save(using=self.db)
         return user_obj
 
@@ -59,9 +59,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
-    full_name = models.CharField(
-        max_length=255, unique=True, null=True, blank=True
-    )
+    full_name = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)

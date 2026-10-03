@@ -1,81 +1,18 @@
 {% extends "base.html" %}
+
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Sales Management</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .grid { display: flex; gap: 40px; }
-        .seccion { flex: 1; border: 1px solid #ccc; padding: 15px; border-radius: 8px; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        button { background-color: #28a745; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; }
-        button.btn-procesar { background-color: #007bff; width: 100%; padding: 10px; margin-top: 10px; }
-    </style>
-</head>
+<h1>Sales Module</h1>
 
-<body>
-    <h1>Sales Module</h1>
-
-    {% comment %} <div class="grid">
-        <!-- Porduct List -->
-        <div class="seccion">
-            <h2>Available Products</h2>
-            <ul>
-                {% for product in products %}
-                    <li>
-                        <strong>{{ product.name }}</strong> - ${{ product.price }}
-                        <form action="{% url 'sales:add_to_cart' product.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit">Add to the cart</button>
-                        </form>
-                    </li>
-                {% empty %}
-                    <li>No available products.</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Shopping cart and Order form -->
-        <div class="seccion">
-            <h2>Shopping Cart</h2>
-            {% if cart %}
-                <ul>
-                    {% for key, item in cart.items %}
-                        <li>
-                            {{ item.name }} x {{ item.quantity }} - ${{ item.price }} c/u
-                        </li>
-                    {% endfor %}
-                </ul>
-                <h3>Total: ${{ cart_total }}</h3>
-
-                <form action="{% url 'sales:process_order' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-procesar">Confirm and process Order</button>
-                </form>
-            {% else %}
-                <p>The cart is empty.</p>
-            {% endif %}
-        </div>
-    </div> {% endcomment %}
-
-    <div class="col">
-        <h2>Weekly sales</h2>
-        <canvas class="render-chart" id="thisWeekSales" data-type="week" width="400" height="400"></canvas>
-    </div>
-</body>
-</html>
+<div class="col">
+    <h2>Weekly sales</h2>
+    <canvas class="render-chart" id="thisWeekSales" data-type="week" width="400" height="400"></canvas>
+</div>
 {% endblock %}
+
 {% block javascript %}
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
   $(document).ready(function(){
     function renderChart(id, data, labels){
-      {% comment %} var ctx = $("#"+id) {% endcomment %}
       var ctx = document.getElementById(id).getContext("2d");
       var myChart = new Chart(ctx, {
         type: "bar",
@@ -100,18 +37,20 @@
     function getSalesData(id, type){
       var url = "{% url 'sales:sales-data' %}"
       var method = "GET"
-      var data = {"type":type}
+      var data = {"type": type}
       $.ajax({
         url: url,
         method: method,
         data: data,
         success: function(responseData){
           renderChart(id, responseData.data, responseData.labels)
-        }, error: function(error){
-          $.alert("An error has occurred")
+        }, 
+        error: function(error){
+          console.error("Error al obtener datos:", error);
         }
       })
     }
+
     var chartsToRender = $(".render-chart")
     $.each(chartsToRender, function(index, html){
       var $this = $(this)
