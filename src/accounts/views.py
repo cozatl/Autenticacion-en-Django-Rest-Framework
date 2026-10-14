@@ -1,7 +1,21 @@
-from django.contrib.auth import login
+from django.contrib.auth import get_user_model, login
 from django.shortcuts import redirect, render
+from rest_framework import permissions, viewsets
 
 from .forms import LoginForm, RegisterForm
+from .serializers import UserSerializer
+
+User = get_user_model()
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed, created, updated, or deleted.
+    """
+
+    queryset = User.objects.all().order_by("-id")
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
 
 def register_view(request):

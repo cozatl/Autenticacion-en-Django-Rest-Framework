@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 
 from django.db import models
@@ -59,10 +60,15 @@ class OrderManagerQuerySet(models.query.QuerySet):
 
 class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
-    order_id = models.CharField(max_length=120, blank=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField()
+    order_id = models.CharField(max_length=120, blank=True, unique=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = str(uuid.uuid4()).replace("-", "").upper()[:12]
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.order_id

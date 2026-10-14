@@ -40,6 +40,7 @@ LOGIN_URL = "/admin/login/"
 
 # Application definitions
 INSTALLED_APPS = [
+    "rest_framework",
     "pages.apps.PagesConfig",
     "sales.apps.SalesConfig",  # Added new app
     "product.apps.ProductConfig",  # Added new app
@@ -66,6 +67,14 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# Error control to redirect to custom error pages
+# https://docs.djangoproject.com/en/6.1/topics/http/views/#customizing-error-views
+# https://docs.djangoproject.com/en/6.1/ref/settings/#std:setting-DEBUG_PROPAGATE_EXCEPTIONS
+DEBUG_PROPAGATE_EXCEPTIONS = True
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
+}
 
 if not TESTING:
     INSTALLED_APPS = [*INSTALLED_APPS, "debug_toolbar"]
