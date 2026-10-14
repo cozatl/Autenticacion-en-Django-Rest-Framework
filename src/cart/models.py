@@ -12,7 +12,7 @@ class Cart(models.Model):
         null=True,
         blank=True,
     )
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, blank=True)
 
     def __str__(self):
-        return str(self.id)
+        return f"Cart #{self.id}"
