@@ -74,6 +74,12 @@ MIDDLEWARE = [
 DEBUG_PROPAGATE_EXCEPTIONS = True
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
+    # Create Global pagination instead of individual
+    "DEFAULT_PAGINATION_CLASS": "product.pagination.ProductPagination",
+    # Implement security for Production in API module
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'rest_framework.renderers.JSONRenderer',
+    # ]
 }
 
 if not TESTING:
