@@ -33,9 +33,10 @@ router.register(r"orders", OrderViewSet, basename="order")
 
 urlpatterns = [
     path("up/", include("up.urls")),
-    path("", include("pages.urls")),
+    # path("", include("pages.urls")),
     path("sales/", include("sales.urls")),
     path("", include("accounts.urls")),
+    path("", include("product.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/", include(router.urls)),
 ]

@@ -35,8 +35,10 @@ ALLOWED_HOSTS = list(map(str.strip, allowed_hosts.split(",")))
 # Add accounts model to match superuser with all new users
 AUTH_USER_MODEL = "accounts.User"
 
-# Define login page URL for the login_required decorator
-LOGIN_URL = "/admin/login/"
+# Define personalized login page URL for the login_required decorator
+# LOGIN_URL = "/admin/login/"
+LOGIN_URL = "accounts:login"
+LOGOUT_REDIRECT_URL = "accounts:login"
 
 # Application definitions
 INSTALLED_APPS = [
@@ -76,6 +78,15 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
     # Create Global pagination instead of individual
     "DEFAULT_PAGINATION_CLASS": "product.pagination.ProductPagination",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # API auth
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # Web auth
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
     # Implement security for Production in API module
     # 'DEFAULT_RENDERER_CLASSES': [
     #     'rest_framework.renderers.JSONRenderer',

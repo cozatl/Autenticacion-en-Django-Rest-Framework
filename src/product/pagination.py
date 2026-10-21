@@ -8,4 +8,3 @@ class ProductPagination(PageNumberPagination):
     max_page_size = 10  # Maximum number of items per page
     # Allow clients to use any string to get the last page
     last_page_strings = ("last",)
-    ordering = "id"
