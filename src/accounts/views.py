@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from rest_framework import permissions, viewsets
+from django.views.decorators.cache import never_cache
+from rest_framework import generics, permissions, viewsets
 
 from .forms import LoginForm, RegisterForm
 from .serializers import UserSerializer
@@ -35,7 +37,32 @@ def login_view(request):
         user = form.get_user()
         login(request, user)
         # Redirects to the sales page after successful login
-        return redirect("sales:sales")
+        return redirect("accounts:profile_page")
 
     context = {"form": form}
     return render(request, "accounts/login.html", context)
+
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    """
+    A view that allows an authenticated user to view and update
+    their own profile.
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        # Returns only the user who is logged in, validated via the JWT token.
+        return self.request.user
+
+
+@login_required
+@never_cache
+def profile_view(request):
+    """
+    HTML view to show user profile when their are
+    logged in.
+    """
+    user = request.user
+    return render(request, "accounts/profile.html", {"user": user})
